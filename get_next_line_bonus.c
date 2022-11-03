@@ -1,34 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line copy.c                               :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/21 18:11:15 by dhendzel          #+#    #+#             */
-/*   Updated: 2022/11/03 12:33:09 by dhendzel         ###   ########.fr       */
+/*   Created: 2022/10/31 12:28:06 by dhendzel          #+#    #+#             */
+/*   Updated: 2022/10/31 12:31:36 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
-	static char	*buf;
+	static char	*buf[1024];
 	char		*line;
 
 	if (read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	buf = read_to_buf(fd, buf);
-	if (!buf)
+	buf[fd] = read_to_buf(fd, buf[fd]);
+	if (!buf[fd])
 		return (NULL);
-	if (buf[0] == '\0')
+	if (buf[fd][0] == '\0')
 	{
-		gn_free_buf(&buf);
+		gn_free_buf(&buf[fd]);
 		return (NULL);
 	}
-	line = extract_line(buf);
-	buf = shorten_buf(buf);
+	line = extract_line(buf[fd]);
+	buf[fd] = shorten_buf(buf[fd]);
 	return (line);
 }
 
